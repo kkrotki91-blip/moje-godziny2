@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f5f6f3">
+  <meta name="description" content="Prosty kalendarz godzin pracy z miesięcznym podsumowaniem i nadgodzinami.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Moje Godziny">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="stylesheet" href="styles.css">
+  <title>Moje Godziny</title>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Moje Godziny — strona główna">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <span>moje<span class="brand-light">godziny</span></span>
+      </a>
+      <div class="top-actions">
+        <span class="saved-status" id="save-status"><i></i>Zapisano na tym urządzeniu</span>
+        <button class="icon-button install-button" id="install-button" type="button" hidden aria-label="Zainstaluj aplikację" title="Zainstaluj aplikację">↓</button>
+      </div>
+    </header>
+
+    <section class="intro">
+      <div>
+        <p class="eyebrow">TWÓJ CZAS, POD TWOJĄ KONTROLĄ</p>
+        <h1>Moje <span>Godziny</span></h1>
+        <p class="intro-copy">Wpisuj przepracowane godziny, a miesięczne podsumowanie policzy się samo.</p>
+      </div>
+      <label class="salary-card">
+        <span class="salary-icon" aria-hidden="true"> zł </span>
+        <span class="salary-copy"><span class="salary-label">Pensja podstawowa netto</span><span class="salary-hint">miesięcznie</span></span>
+        <span class="salary-input-wrap"><input id="salary" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0"><span>zł</span></span>
+      </label>
+    </section>
+
+    <section class="summary-grid" aria-label="Podsumowanie miesiąca">
+      <article class="summary-card hours-card">
+        <div class="summary-top"><span>Przepracowane</span><span class="summary-icon">◷</span></div>
+        <div class="summary-value"><strong id="total-hours">0</strong><span>godz.</span></div>
+        <div class="summary-note">Wszystkie dni miesiąca</div>
+      </article>
+      <article class="summary-card norm-card">
+        <div class="summary-top"><span>Norma miesiąca</span><span class="summary-icon">▦</span></div>
+        <div class="summary-value"><strong id="norm-hours">0</strong><span>godz.</span></div>
+        <div class="summary-note" id="workday-count">Dni robocze × 8 godz.</div>
+      </article>
+      <article class="summary-card overtime-card">
+        <div class="summary-top"><span>Nadgodziny</span><span class="summary-icon">↗</span></div>
+        <div class="summary-value"><strong id="overtime-hours">0</strong><span>godz.</span></div>
+        <div class="summary-note">Stawka 100% · bez mnożników</div>
+      </article>
+      <article class="summary-card payout-card">
+        <div class="summary-top"><span>Szacowana wypłata</span><span class="summary-icon">✳</span></div>
+        <div class="summary-value"><strong id="payout">—</strong><span>zł</span></div>
+        <div class="summary-note" id="hourly-rate">Stawka bazowa: — zł / godz.</div>
+      </article>
+    </section>
+
+    <section class="workspace">
+      <section class="calendar-panel" aria-label="Kalendarz godzin pracy">
+        <div class="calendar-heading">
+          <div class="month-title"><h2 id="month-title"></h2><span id="month-caption"></span></div>
+          <div class="calendar-controls">
+            <button class="nav-button" id="prev-month" type="button" aria-label="Poprzedni miesiąc">‹</button>
+            <button class="today-button" id="today-button" type="button">Dzisiaj</button>
+            <button class="nav-button" id="next-month" type="button" aria-label="Następny miesiąc">›</button>
+          </div>
+        </div>
+        <div class="calendar-scroll">
+          <div class="calendar-grid" id="calendar-grid" role="grid" aria-label="Dni miesiąca"></div>
+        </div>
+        <div class="calendar-legend"><span><i class="legend-dot work-dot"></i>Dzień roboczy · domyślnie 8 godz.</span><span><i class="legend-dot weekend-dot"></i>Weekend</span><span><i class="legend-dot holiday-dot"></i>Święto ustawowe</span><span><i class="legend-dot leave-dot"></i>Urlop / oddanie krwi · 8 godz.</span><span class="legend-tip">Wybierz oznaczenie w polu dnia</span></div>
+      </section>
+
+      <aside class="details-panel">
+        <div class="details-header"><div><p class="eyebrow">JAK TO LICZYMY</p><h2>Podsumowanie</h2></div><span class="details-badge">100%</span></div>
+        <div class="calculation-list">
+          <div class="calc-row"><span>Godziny z kalendarza</span><strong id="detail-total">0 godz.</strong></div>
+          <div class="calc-row minus"><span>Norma: dni robocze × 8</span><strong id="detail-norm">− 0 godz.</strong></div>
+          <div class="calc-divider"></div>
+          <div class="calc-row result"><span>Nadgodziny w miesiącu</span><strong id="detail-overtime">0 godz.</strong></div>
+        </div>
+        <div class="rate-box"><span class="rate-symbol">↗</span><div><strong>Każda nadgodzina płatna 100%</strong><p>Stawka podstawowa netto za godzinę</p></div></div>
+        <div class="leave-tracker">
+          <div class="leave-heading">
+            <div><strong>Urlop wypoczynkowy</strong><small>Rok <span id="leave-year"></span></small></div>
+            <label class="leave-limit"><span>Wymiar dni</span><input id="leave-allowance" type="number" min="0" step="0.5" inputmode="decimal" placeholder="np. 20 lub 26" aria-label="Roczny wymiar urlopu w dniach"></label>
+          </div>
+          <div class="leave-stats">
+            <div><strong id="leave-used">0</strong><span>wykorzystane dni</span></div>
+            <div><strong id="leave-left">—</strong><span>pozostało dni</span></div>
+          </div>
+          <small class="leave-hint" id="leave-hint">Ustaw swój roczny wymiar, aby zobaczyć pozostałe dni.</small>
+        </div>
+        <div class="payout-box"><span>Szacowana wypłata netto</span><strong id="detail-payout">— zł</strong><small>pensja podstawowa + nadgodziny</small></div>
+        <p class="storage-note"><span aria-hidden="true">⌂</span> Twoje dane są zapisywane wyłącznie na tym urządzeniu.</p>
+      </aside>
+    </section>
+    <footer class="footer"><span>Moje Godziny <span id="footer-year"></span></span><span>Działa offline · Twoje dane zostają u Ciebie</span></footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
